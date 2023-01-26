@@ -10,8 +10,8 @@ import { AnimatePresence } from "framer-motion";
 import Carousel from "./components/Carousel";
 
 // icons
-import { BsShuffle as ShuffleIcon } from "react-icons/bs";
-import { shuffleArray } from "./util";
+// import { BsShuffle as ShuffleIcon } from "react-icons/bs";
+// import { shuffleArray } from "./util";
 
 const App = () => {
   const [selectedImage, setSelectedImage] = useState<any>(null);
@@ -27,18 +27,6 @@ const App = () => {
           </Modal>
         )}
       </AnimatePresence>
-
-      <div className="flex justify-center my-4">
-        <button
-          className="bg-green-500 flex items-center gap-3 py-2 px-5  rounded-md font-bold text-white"
-          onClick={() => {
-            // const new
-            // setImages(shuffleArray(data));
-          }}
-        >
-          <ShuffleIcon /> <div>Downland</div>
-        </button>
-      </div>
       {/* <Loader /> */}
     </div>
   );
