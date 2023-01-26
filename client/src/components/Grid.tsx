@@ -1,28 +1,29 @@
-import Thumbnail from "./Thumbnail";
-import { Picture } from "../constants/interfaces";
-
+// framer motion
 import { motion } from "framer-motion";
+
+// components
+import Thumbnail from "./Thumbnail";
 import { container } from "../constants/variants";
 
-interface Props {
-  pictures: readonly Picture[];
-  onPictureClick: (picture: Picture) => void;
+// prop type
+interface PropType {
+  images: any[];
+  selectImage: (index: number) => void;
 }
 
-const Grid = ({ pictures, onPictureClick }: Props) => {
+const Grid = ({ images, selectImage }: PropType) => {
   return (
     <motion.div
-      layout
       variants={container}
       initial="hidden"
       animate="visible"
-      className="grid gap-2 p-2 grid-cols-3 sm:grid-cols-4 lg:grid-cols-6"
+      className="grid grid-cols-3 gap-2 p-2"
     >
-      {pictures.map((picture) => (
+      {images.map((image, index) => (
         <Thumbnail
-          key={picture.url}
-          picture={picture}
-          onClick={onPictureClick}
+          key={index}
+          image={image}
+          onClick={() => selectImage(index)}
         />
       ))}
     </motion.div>

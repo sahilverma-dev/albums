@@ -1,17 +1,12 @@
 const Loader = () => {
   return (
     <div
-      className="w-full flex items-center justify-center flex-col gap-2"
+      className="flex items-center justify-center bg-black/10"
       style={{
-        height: `calc(100vh - 124px)`,
+        height: "calc(100vh - 70px)",
       }}
     >
-      <img
-        src="/logo.png"
-        alt="loading"
-        className="h-10 aspect-square animate-spin"
-      />
-      <p className="font-bold">Loading ...</p>
+      <img src="logo.png" className="h-10 animate-spin" alt="logo" />
     </div>
   );
 };

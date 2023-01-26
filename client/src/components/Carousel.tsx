@@ -1,115 +1,142 @@
 import { useState } from "react";
-import { Picture } from "../constants/interfaces";
-
-import { Variants, motion } from "framer-motion";
-
-import Formats from "./Formats";
-("./Formats");
+import {
+  motion,
+  AnimatePresence,
+  wrap,
+  PanInfo,
+  Variants,
+} from "framer-motion";
+import { images } from "../constants/images";
 
 // icons
 import {
-  FaChevronLeft as LeftIcon,
-  FaChevronRight as RightIcon,
-} from "react-icons/fa";
+  FiChevronLeft as LeftIcon,
+  FiChevronRight as RightIcon,
+} from "react-icons/fi";
 
-type Props = {
-  picture: Picture;
-};
+// props type
+interface PropType {
+  index: number;
+}
 
-const wrap = (index: number, total: number) => {
-  if (index < 0) {
-    return total - 1;
-  }
-  if (index === total) {
-    return 0;
-  }
-  return index;
-};
-
-const options = [
-  {
-    label: "Square (1:1)",
-    aspect: 1,
+const carouselVariants: Variants = {
+  enter: (direction: number) => {
+    return {
+      x: direction > 0 ? 1000 : -1000,
+      opacity: 0,
+      scale: 1,
+    };
   },
-  {
-    label: "Portrait (3:4)",
-    aspect: 3 / 4,
-  },
-  {
-    label: "Landscape (16:9)",
-    aspect: 16 / 9,
-  },
-];
-
-const carouselVariant: Variants = {
-  enter: {
-    opacity: 0,
-    x: 500,
-  },
-  visible: {
-    opacity: 1,
+  stay: {
+    zIndex: 1,
     x: 0,
+    opacity: 1,
+    scale: 1,
   },
-  exit: {
-    opacity: 0,
-    x: -500,
+  exit: (direction: number) => {
+    return {
+      zIndex: 0,
+      x: direction < 0 ? 1000 : -1000,
+      opacity: 0,
+      scale: 1,
+    };
   },
 };
 
-const Carousel = ({ picture }: Props) => {
-  const [index, setIndex] = useState(0);
+// const textVariant: Variants = {
+//   enter: {
+//     y: 100,
+//     opacity: 0,
+//   },
+//   stay: {
+//     y: 0,
+//     opacity: 1,
+//   },
+//   exit: {
+//     y: -100,
+//     opacity: 0,
+//   },
+// };
+
+const swipeConfidenceThreshold = 10000;
+const swipePower = (offset: number, velocity: number) => {
+  return Math.abs(offset) * velocity;
+};
+
+const Carousel = ({ index }: PropType) => {
+  const [[page, direction], setPage] = useState([0, 0]);
+
+  const imageIndex = wrap(index, images.length, page);
 
   const paginate = (newDirection: number) => {
-    const newIndex = wrap(index + newDirection, options.length);
-    setIndex(newIndex);
+    setPage([page + newDirection, newDirection]);
   };
 
-  const Option = options[index];
+  const handelDragEnd = (e: any, { offset, velocity }: PanInfo) => {
+    const swipe = swipePower(offset.x, velocity.x);
+    if (swipe < -swipeConfidenceThreshold) {
+      paginate(2);
+    } else if (swipe > swipeConfidenceThreshold) {
+      paginate(-2);
+    }
+  };
 
   return (
-    <div className="w-full flex flex-col items-center">
-      <h3 className="text-md py-6 font-bold uppercase">Choose your format</h3>
-      <div className="bg-zinc-400 py-3 flex items-center justify-between w-full">
+    <div className="p-2">
+      <div className="flex items-center justify-between gap-2">
         <button
-          className="carousel-arrow text-2xl text-zinc-900 p-4"
-          onClick={() => paginate(-1)}
+          type="button"
+          className="aspect-square p-2 bg-gray-200 rounded-full flex items-center justify-center active:bg-gray-400"
+          onClick={() => paginate(-2)}
         >
           <LeftIcon />
         </button>
-        <div className="">
-          {/* <Option.Component src={picture.url} /> */}
-          <motion.img
-            // layout
-            src={picture.url}
-            className="max-h-[350px] shadow-md rounded-md object-cover origin-center"
-            style={{
-              aspectRatio: Option.aspect,
+        <AnimatePresence initial={false} custom={direction}>
+          <motion.div
+            key={page}
+            custom={direction}
+            variants={carouselVariants}
+            initial="enter"
+            animate="stay"
+            exit="exit"
+            transition={{
+              x: { type: "spring", stiffness: 300, damping: 30 },
+              opacity: { duration: 0.2 },
             }}
-          />
-        </div>
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={1}
+            className="aspect-square border rounded-md relative overflow-hidden"
+            onDragEnd={handelDragEnd}
+          >
+            <div className="overlay" />
+            <img
+              src={images[imageIndex]}
+              className="h-full w-full object-cover"
+            />
+          </motion.div>
+        </AnimatePresence>
         <button
-          className="carousel-arrow text-2xl text-zinc-900 p-4 carousel-arrow--right"
-          onClick={() => paginate(1)}
+          type="button"
+          className=" p-2 bg-gray-200 rounded-full flex items-center justify-center active:bg-gray-400"
+          onClick={() => paginate(2)}
         >
           <RightIcon />
         </button>
       </div>
-      <div className="py-2 px-7 -translate-y-1/2 bg-white font-bold rounded-md shadow-md text-sm border border-black overflow-hidden">
+      {/* <div className="overflow-hidden">
         <motion.div
-          initial={{
-            y: 100,
-          }}
-          animate={{
-            y: 0,
-          }}
-          transition={{
-            type: "tween",
-          }}
-          key={index}
+          key={page}
+          custom={direction}
+          variants={textVariant}
+          initial="enter"
+          animate="stay"
+          exit="exit"
+          className="w-full text-xl font-bold truncate my-4"
         >
-          {options[index].label}
+          Lorem ipsum dolor sit amet consectetur adipisicing.
         </motion.div>
-      </div>
+      </div> */}
     </div>
   );
 };

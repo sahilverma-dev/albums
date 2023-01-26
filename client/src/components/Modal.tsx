@@ -1,23 +1,53 @@
-import { FC, ReactNode } from "react";
-import { motion, PanInfo, Variants } from "framer-motion";
+import { ReactElement } from "react";
 
+// framer motion
+import { PanInfo, Variants, motion, useDragControls } from "framer-motion";
+
+// icons
+import { GrFormClose as CloseIcon } from "react-icons/gr";
+
+// prop type
 type Props = {
-  children: ReactNode;
-  onClose: () => void;
+  children: ReactElement;
+  close(): void;
 };
 
-const overlayVariants: Variants = {
+// variants
+const closeButtonVariant: Variants = {
+  hidden: {
+    x: 1000,
+    transition: {
+      delay: 0.1,
+    },
+  },
+  visible: {
+    x: 0,
+    transition: {
+      type: "spring",
+      damping: 30,
+      stiffness: 300,
+    },
+  },
+};
+
+const overlayVariant: Variants = {
   hidden: {
     opacity: 0,
+    transition: {
+      delay: 0.1,
+    },
   },
   visible: {
     opacity: 1,
   },
 };
 
-const panelVariant: Variants = {
+const panelVariants: Variants = {
   hidden: {
     y: 1000,
+    transition: {
+      delay: 0.1,
+    },
   },
   visible: {
     y: 0,
@@ -29,25 +59,40 @@ const panelVariant: Variants = {
   },
 };
 
-const Modal: FC<Props> = ({ children, onClose }) => {
-  const handelDragEnd = (
-    e: MouseEvent | TouchEvent | PointerEvent,
-    info: PanInfo
-  ) => {
-    if (info.offset.y > 200) onClose();
+const Modal = ({ children, close }: Props) => {
+  const dragControls = useDragControls();
+  const handleDragEnd = (event: any, info: PanInfo) => {
+    if (info.offset.y > 200) close();
   };
+
   return (
     <>
-      <motion.div
-        className="bg-black/50 backdrop-blur fixed inset-0 z-20"
-        variants={overlayVariants}
+      <motion.button
+        type="button"
+        whileTap={{
+          scale: 0.92,
+        }}
+        variants={closeButtonVariant}
         initial="hidden"
         animate="visible"
         exit="hidden"
-        onClick={() => onClose()}
-      />
+        onClick={close}
+        className="fixed top-4 right-3 flex items-center justify-center text-2xl sm:text-3xl text-slate-700 bg-white rounded-full border aspect-square h-9 sm:h-11 z-20"
+      >
+        <CloseIcon />
+      </motion.button>
       <motion.div
-        variants={panelVariant}
+        variants={overlayVariant}
+        initial="hidden"
+        animate="visible"
+        exit="hidden"
+        className="fixed inset-0 bg-black/50 backdrop-blur z-10 cursor-pointer"
+        onClick={close}
+      ></motion.div>
+
+      <motion.div
+        layout
+        variants={panelVariants}
         initial="hidden"
         animate="visible"
         exit="hidden"
@@ -57,21 +102,19 @@ const Modal: FC<Props> = ({ children, onClose }) => {
           bottom: 0,
         }}
         dragElastic={0.8}
-        onDragEnd={handelDragEnd}
-        className="fixed bottom-0 rounded-xl shadow-lg w-full h-auto bg-white z-30"
+        onDragEnd={handleDragEnd}
+        dragControls={dragControls}
+        dragListener={false}
+        className="fixed w-full shadow bottom-0 z-30 bg-white p-2 rounded-t-lg transition-all"
       >
-        <div className="bg-black/90 h-2 w-40 mx-auto my-4 rounded-full"></div>
-        <motion.div
-          className="div"
-          drag="y"
-          dragConstraints={{
-            top: 0,
-            bottom: 0,
-          }}
-          dragElastic={0}
+        <div
+          className=" py-6 mx-auto w-40 cursor-grab active:cursor-grabbing"
+          onPointerDown={(event) => dragControls.start(event)}
+          style={{ touchAction: "none" }}
         >
-          {children}
-        </motion.div>
+          <div className="bg-black h-2 rounded-full"></div>
+        </div>
+        <div className="aspect-square">{children}</div>
       </motion.div>
     </>
   );

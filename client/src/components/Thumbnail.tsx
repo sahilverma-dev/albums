@@ -1,33 +1,39 @@
-import { Picture } from "../constants/interfaces";
+// framer motion
 import { motion } from "framer-motion";
+
+// components
 import { item } from "../constants/variants";
 
-interface Props {
-  picture: Picture;
-  onClick: (picture: Picture) => void;
+// prop type
+interface PropType {
+  image: any;
+  onClick: () => void;
 }
 
-const Thumbnail = ({ picture, onClick }: Props) => {
+const Thumbnail = ({ image, onClick }: PropType) => {
   return (
     <motion.div
       variants={item}
-      layout
-      layoutId={picture.url}
-      className="relative aspect-square rounded overflow-hidden cursor-pointer"
+      className="relative aspect-square rounded-md overflow-hidden cursor-pointer border"
       whileHover={{
-        scale: 1.05,
-      }}
-      whileTap={{
-        scale: 0.999999,
+        scale: 1.08,
       }}
       transition={{
         type: "tween",
-        ease: "easeInOut",
+        duration: 0.2,
       }}
-      onClick={() => onClick(picture)}
+      whileTap={{
+        scale: 0.98,
+      }}
+      onClick={onClick}
     >
       <div className="overlay" />
-      <img src={picture.url} className=" object-cover h-full w-full" />
+      <img
+        src={image}
+        alt={image}
+        className="h-full w-full object-cover origin-center"
+        loading="lazy"
+      />
     </motion.div>
   );
 };
