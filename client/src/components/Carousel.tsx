@@ -13,6 +13,7 @@ import {
   FiChevronLeft as LeftIcon,
   FiChevronRight as RightIcon,
 } from "react-icons/fi";
+import { MdFileDownload as DownloadIcon } from "react-icons/md";
 
 // props type
 interface PropType {
@@ -43,20 +44,20 @@ const carouselVariants: Variants = {
   },
 };
 
-// const textVariant: Variants = {
-//   enter: {
-//     y: 100,
-//     opacity: 0,
-//   },
-//   stay: {
-//     y: 0,
-//     opacity: 1,
-//   },
-//   exit: {
-//     y: -100,
-//     opacity: 0,
-//   },
-// };
+const textVariant: Variants = {
+  enter: {
+    y: 100,
+    opacity: 0,
+  },
+  stay: {
+    y: 0,
+    opacity: 1,
+  },
+  exit: {
+    y: -100,
+    opacity: 0,
+  },
+};
 
 const swipeConfidenceThreshold = 10000;
 const swipePower = (offset: number, velocity: number) => {
@@ -82,8 +83,21 @@ const Carousel = ({ index }: PropType) => {
   };
 
   return (
-    <div className="p-2">
-      <div className="flex items-center justify-between gap-2">
+    <div className="p-2 w-full text-center">
+      <div className="overflow-hidden px-6">
+        <motion.div
+          key={page}
+          custom={direction}
+          variants={textVariant}
+          initial="enter"
+          animate="stay"
+          exit="exit"
+          className="w-full sm:text-xl text-md font-bold truncate"
+        >
+          Lorem ipsum dolor sit amet consectetur adipisicing.
+        </motion.div>
+      </div>
+      <div className="flex aspect-square items-center justify-between gap-2">
         <button
           type="button"
           className="aspect-square p-2 bg-gray-200 rounded-full flex items-center justify-center active:bg-gray-400"
@@ -114,6 +128,14 @@ const Carousel = ({ index }: PropType) => {
               src={images[imageIndex]}
               className="h-full w-full object-cover"
             />
+            <a
+              // ts ignore
+              href={images[imageIndex]}
+              target="_blank"
+              className="absolute bottom-2 right-2 aspect-square bg-green-500 rounded-md text-white p-2 z-10"
+            >
+              <DownloadIcon />
+            </a>
           </motion.div>
         </AnimatePresence>
         <button
@@ -124,19 +146,6 @@ const Carousel = ({ index }: PropType) => {
           <RightIcon />
         </button>
       </div>
-      {/* <div className="overflow-hidden">
-        <motion.div
-          key={page}
-          custom={direction}
-          variants={textVariant}
-          initial="enter"
-          animate="stay"
-          exit="exit"
-          className="w-full text-xl font-bold truncate my-4"
-        >
-          Lorem ipsum dolor sit amet consectetur adipisicing.
-        </motion.div>
-      </div> */}
     </div>
   );
 };
