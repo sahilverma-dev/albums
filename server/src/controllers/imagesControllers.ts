@@ -6,7 +6,11 @@ const getAllImages = async (req: Request, res: Response) => {
   try {
     const images = await Image.find();
     res.status(200).json({
-      images,
+      images: images.map((image: any) => ({
+        id: image._id,
+        caption: image.caption,
+        src: image.src,
+      })),
       total: images.length,
       message: "Images fetched successfully",
     });
@@ -30,7 +34,11 @@ const addImage = async (req: Request, res: Response) => {
 
     newImage.save();
     res.status(200).json({
-      image: newImage,
+      image: {
+        id: newImage._id,
+        caption: newImage.caption,
+        src: newImage.src,
+      },
       message: "New Image added successfully",
     });
   } catch (error: any) {
@@ -48,7 +56,11 @@ const singleImage = async (req: Request, res: Response) => {
 
     if (image)
       res.status(200).json({
-        image,
+        image: {
+          id,
+          caption: image.caption,
+          src: image.src,
+        },
         message: "Image Found",
       });
     else {
