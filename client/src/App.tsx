@@ -1,25 +1,56 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // components
 import Grid from "./components/Grid";
 import Header from "./components/Header";
 import Loader from "./components/Loader";
 import Modal from "./components/Modal";
-import { images as data } from "./constants/images";
-import { AnimatePresence } from "framer-motion";
+import { images } from "./constants/images";
 import Carousel from "./components/Carousel";
+import { ImagesType } from "./types";
 
-// icons
-// import { BsShuffle as ShuffleIcon } from "react-icons/bs";
-// import { shuffleArray } from "./util";
+// framer motion
+import { AnimatePresence, Variants, motion } from "framer-motion";
+import ImageUpload from "./components/ImageUpload";
+import { populateData } from "./util";
+import { api } from "./axios";
 
 const App = () => {
-  const [selectedImage, setSelectedImage] = useState<any>(null);
-  const [images, setImages] = useState<any[]>(data);
+  const [selectedImage, setSelectedImage] = useState<number | null>(null);
+  const [showUploadModal, setShowUploadModal] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [images, setImages] = useState<ImagesType[] | null>(null);
+
+  useEffect(() => {
+    const getData = async () => {
+      setIsLoading(true);
+      try {
+        const { data } = await api("/images/all");
+        setIsLoading(false);
+        setImages(data?.images?.reverse());
+      } catch (error) {
+        setIsLoading(false);
+        console.log(error);
+      }
+    };
+    getData();
+  }, []);
+
   return (
-    <div className="sm:max-w-[500px] relative min-h-screen mx-auto sm:border">
+    <div className="sm:max-w-[500px] relative overflow-y-scroll mih-h-screen mx-auto sm:border">
       <Header />
-      <Grid images={images} selectImage={setSelectedImage} />
+      {isLoading && <Loader />}
+      {!isLoading && images === null && (
+        <div
+          className="flex items-center justify-center flex-col gap-3"
+          style={{
+            height: "calc(100vh - 70px)",
+          }}
+        >
+          <p className="font-bold">No Images</p>
+        </div>
+      )}
+      {images && <Grid images={images} selectImage={setSelectedImage} />}
       <AnimatePresence>
         {selectedImage !== null && (
           <Modal close={() => setSelectedImage(null)}>
@@ -27,7 +58,35 @@ const App = () => {
           </Modal>
         )}
       </AnimatePresence>
-      {/* <Loader /> */}
+      <div className="fixed bottom-2 right-3 flex gap-2">
+        {!isLoading && images === null && (
+          <button
+            type="button"
+            onClick={populateData}
+            className=" bg-green-500 active:bg-blue-800 text-white shadow-md px-6 py-2 border border-black/10 font-bold rounded-md"
+          >
+            Populate Data
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={() => setShowUploadModal(true)}
+          className=" bg-blue-500 active:bg-blue-800 text-white shadow-md px-6 py-2 border border-black/10 font-bold rounded-md"
+        >
+          Upload
+        </button>
+      </div>
+      <AnimatePresence>
+        {showUploadModal && (
+          <Modal close={() => setShowUploadModal(false)}>
+            <ImageUpload
+              images={images}
+              close={() => setShowUploadModal(false)}
+              setImages={setImages}
+            />
+          </Modal>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

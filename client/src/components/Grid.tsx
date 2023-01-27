@@ -4,10 +4,11 @@ import { motion } from "framer-motion";
 // components
 import Thumbnail from "./Thumbnail";
 import { container } from "../constants/variants";
+import { ImagesType } from "../types";
 
 // prop type
 interface PropType {
-  images: any[];
+  images: ImagesType[] | null;
   selectImage: (index: number) => void;
 }
 
@@ -19,10 +20,10 @@ const Grid = ({ images, selectImage }: PropType) => {
       animate="visible"
       className="grid grid-cols-3 gap-2 p-2"
     >
-      {images.map((image, index) => (
+      {images?.map((image, index) => (
         <Thumbnail
-          key={index}
-          image={image}
+          key={image.id}
+          image={image.src}
           onClick={() => selectImage(index)}
         />
       ))}

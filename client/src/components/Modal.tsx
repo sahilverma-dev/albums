@@ -45,12 +45,11 @@ const overlayVariant: Variants = {
 const panelVariants: Variants = {
   hidden: {
     y: 1000,
-    transition: {
-      delay: 0.1,
-    },
+    x: "-50%",
   },
   visible: {
     y: 0,
+    x: "-50%",
     transition: {
       type: "spring",
       damping: 30,
@@ -105,7 +104,7 @@ const Modal = ({ children, close }: Props) => {
         onDragEnd={handleDragEnd}
         dragControls={dragControls}
         dragListener={false}
-        className="absolute w-full shadow bottom-0 z-30 bg-white p-2 rounded-t-lg transition-all overflow-hidden"
+        className="fixed left-1/2 bottom-0 w-full max-w-[500px] shadow z-30 bg-white p-2 rounded-t-lg transition-all overflow-hidden"
       >
         <div
           className=" py-6 mx-auto w-40 cursor-grab active:cursor-grabbing"

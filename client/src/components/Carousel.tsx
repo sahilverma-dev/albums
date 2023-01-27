@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   motion,
   AnimatePresence,
@@ -76,11 +76,18 @@ const Carousel = ({ index }: PropType) => {
   const handelDragEnd = (e: any, { offset, velocity }: PanInfo) => {
     const swipe = swipePower(offset.x, velocity.x);
     if (swipe < -swipeConfidenceThreshold) {
-      paginate(2);
+      paginate(1);
     } else if (swipe > swipeConfidenceThreshold) {
-      paginate(-2);
+      paginate(-1);
     }
   };
+
+  useEffect(() => {
+    window.onkeydown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") paginate(-1);
+      else if (e.key === "ArrowRight") paginate(1);
+    };
+  }, []);
 
   return (
     <div className="p-2 w-full text-center">
@@ -94,14 +101,14 @@ const Carousel = ({ index }: PropType) => {
           exit="exit"
           className="w-full sm:text-xl text-md font-bold truncate"
         >
-          Lorem ipsum dolor sit amet consectetur adipisicing.
+          {images[imageIndex].caption}
         </motion.div>
       </div>
       <div className="flex aspect-square items-center justify-between gap-2">
         <button
           type="button"
           className="aspect-square p-2 bg-gray-200 rounded-full flex items-center justify-center active:bg-gray-400"
-          onClick={() => paginate(-2)}
+          onClick={() => paginate(-1)}
         >
           <LeftIcon />
         </button>
@@ -125,12 +132,12 @@ const Carousel = ({ index }: PropType) => {
           >
             <div className="overlay" />
             <img
-              src={images[imageIndex]}
+              src={images[imageIndex].src}
               className="h-full w-full object-cover"
             />
             <a
               // ts ignore
-              href={images[imageIndex]}
+              href={images[imageIndex].src}
               target="_blank"
               className="absolute bottom-2 right-2 aspect-square bg-green-500 rounded-md text-white p-2 z-10"
             >
@@ -141,7 +148,7 @@ const Carousel = ({ index }: PropType) => {
         <button
           type="button"
           className=" p-2 bg-gray-200 rounded-full flex items-center justify-center active:bg-gray-400"
-          onClick={() => paginate(2)}
+          onClick={() => paginate(1)}
         >
           <RightIcon />
         </button>
