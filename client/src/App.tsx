@@ -17,7 +17,7 @@ const App = () => {
   const [selectedImage, setSelectedImage] = useState<any>(null);
   const [images, setImages] = useState<any[]>(data);
   return (
-    <div className="sm:max-w-[500px] mx-auto sm:border">
+    <div className="sm:max-w-[500px] relative min-h-screen mx-auto sm:border">
       <Header />
       <Grid images={images} selectImage={setSelectedImage} />
       <AnimatePresence>
