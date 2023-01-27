@@ -40,7 +40,7 @@ const App = () => {
     <div className="sm:max-w-[500px] relative overflow-y-scroll mih-h-screen mx-auto sm:border">
       <Header />
       {isLoading && <Loader />}
-      {!isLoading && images === null && (
+      {!isLoading && images?.length === 0 && (
         <div
           className="flex items-center justify-center flex-col gap-3"
           style={{
@@ -59,7 +59,7 @@ const App = () => {
         )}
       </AnimatePresence>
       <div className="fixed bottom-2 right-3 flex gap-2">
-        {!isLoading && images === null && (
+        {!isLoading && images?.length === 0 && (
           <button
             type="button"
             onClick={populateData}

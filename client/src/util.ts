@@ -22,4 +22,5 @@ export const populateData = async () => {
     });
     console.log(data);
   });
+  window.location.reload();
 };
