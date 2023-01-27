@@ -1,8 +1,11 @@
 import express, { json } from "express";
 import dotenv from "dotenv";
 import "colors";
-// importing routes
 import { connectDB } from "./config/db";
+import cors from "cors";
+
+// importing routes
+import { imagesRoute } from "./routes/imagesRoute";
 
 // configuration
 dotenv.config();
@@ -13,6 +16,13 @@ const PORT = process.env.PORT || 4000;
 
 app.use(json());
 
+// configure CORS
+app.use(
+  cors({
+    origin: process.env.ORIGIN || "*",
+  })
+);
+
 // connecting database
 connectDB();
 
@@ -20,6 +30,7 @@ connectDB();
 app.get("/", (req, res) => {
   res.send("listening");
 });
+app.use("/api/v1/images", imagesRoute);
 
 console.clear();
 
