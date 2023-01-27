@@ -105,7 +105,7 @@ const Modal = ({ children, close }: Props) => {
         onDragEnd={handleDragEnd}
         dragControls={dragControls}
         dragListener={false}
-        className="absolute w-full shadow bottom-0 z-30 bg-white p-2 rounded-t-lg transition-all"
+        className="absolute w-full shadow bottom-0 z-30 bg-white p-2 rounded-t-lg transition-all overflow-hidden"
       >
         <div
           className=" py-6 mx-auto w-40 cursor-grab active:cursor-grabbing"
