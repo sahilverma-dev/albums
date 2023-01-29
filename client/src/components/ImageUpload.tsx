@@ -29,7 +29,7 @@ const drawSVG: Variants = {
 interface PropType {
   close: () => void;
   images: ImagesType[] | null;
-  setImages: Dispatch<SetStateAction<ImagesType[] | null>>;
+  setImages: Dispatch<SetStateAction<ImagesType[]>>;
 }
 
 const ImageUpload = ({ close, setImages, images }: PropType) => {

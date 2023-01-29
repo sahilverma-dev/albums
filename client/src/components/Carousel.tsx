@@ -6,7 +6,6 @@ import {
   PanInfo,
   Variants,
 } from "framer-motion";
-import { images } from "../constants/images";
 
 // icons
 import {
@@ -14,10 +13,12 @@ import {
   FiChevronRight as RightIcon,
 } from "react-icons/fi";
 import { MdFileDownload as DownloadIcon } from "react-icons/md";
+import { ImagesType } from "../types";
 
 // props type
 interface PropType {
   index: number;
+  images: ImagesType[];
 }
 
 const carouselVariants: Variants = {
@@ -64,7 +65,7 @@ const swipePower = (offset: number, velocity: number) => {
   return Math.abs(offset) * velocity;
 };
 
-const Carousel = ({ index }: PropType) => {
+const Carousel = ({ index, images }: PropType) => {
   const [[page, direction], setPage] = useState([0, 0]);
 
   const imageIndex = wrap(index, images.length, page);

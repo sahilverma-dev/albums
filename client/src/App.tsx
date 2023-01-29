@@ -19,7 +19,7 @@ const App = () => {
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
   const [showUploadModal, setShowUploadModal] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [images, setImages] = useState<ImagesType[] | null>(null);
+  const [images, setImages] = useState<ImagesType[]>([]);
 
   useEffect(() => {
     const getData = async () => {
@@ -35,6 +35,10 @@ const App = () => {
     };
     getData();
   }, []);
+
+  useEffect(() => {
+    console.log(selectedImage);
+  }, [selectedImage]);
 
   return (
     <div className="sm:max-w-[500px] relative overflow-y-scroll mih-h-screen mx-auto sm:border">
@@ -54,7 +58,7 @@ const App = () => {
       <AnimatePresence>
         {selectedImage !== null && (
           <Modal close={() => setSelectedImage(null)}>
-            <Carousel index={selectedImage} />
+            <Carousel images={images} index={selectedImage} />
           </Modal>
         )}
       </AnimatePresence>
